@@ -5,14 +5,18 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.ide.fileTemplates.FileTemplateManager;
 import com.intellij.ide.fileTemplates.FileTemplate;
 import com.intellij.ide.fileTemplates.FileTemplateUtil;
+import org.jetbrains.annotations.NonNls;
 
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 /**
@@ -31,6 +35,10 @@ public class VueGen extends AnAction {
         if(psiElement instanceof PsiDirectory) {
             psiDirectory = (PsiDirectory)psiElement;
         }
+
+        this.addFileTemplate("Vue view","vue");
+        this.addFileTemplate("Vue js","js");
+        this.addFileTemplate("Vue scss","scss");
 
         this.makeFile(psiDirectory.getName(),psiDirectory,"Vue view");
         this.makeFile(psiDirectory.getName(),psiDirectory,"Vue js");
@@ -55,7 +63,24 @@ public class VueGen extends AnAction {
         {
 
         }
-
-
     }
+
+
+    private void addFileTemplate(final @NonNls String name, @NonNls String ext) {
+        FileTemplate template = FileTemplateManager.getInstance().getTemplate(name);
+        if (template == null) {
+            try {
+                template =
+                        FileTemplateManager.getInstance().addTemplate(name, ext);
+                template.setText(FileUtil.loadTextAndClose(
+                        new InputStreamReader(this.getClass().getResourceAsStream("fileTemplates/"+ name + "." + ext + ".ft")))
+                );
+            } catch (IOException ex) {
+
+            }
+        }
+    }
+
+
+
 }

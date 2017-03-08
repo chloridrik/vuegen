@@ -1,0 +1,22 @@
+export default {
+
+    name: '${NAME}',
+
+    components:[],
+
+    mixins: [],
+
+    data() {
+        return {
+        };
+    },
+
+    computed: {},
+    
+    mounted() {},
+    
+    beforeDestroy() {},
+    
+    methods: {}
+
+}
